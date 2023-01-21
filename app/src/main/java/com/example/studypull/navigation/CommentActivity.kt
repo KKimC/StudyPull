@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -22,8 +21,6 @@ import com.example.studypull.navigation.model.ContentDTO
 import com.example.studypull.navigation.util.FcmPush
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
 
 class CommentActivity : AppCompatActivity() {
     var contentUid: String? = null
@@ -80,7 +77,7 @@ class CommentActivity : AppCompatActivity() {
 
         var msg =
             FirebaseAuth.getInstance().currentUser?.email + " " + getString(R.string.alarm_comment) + " of " + message
-        FcmPush.instance.sendMessage(destinationUid, "StudyPull", msg)
+        FcmPush.instance.sendMessage(destinationUid, "StudyPull")
 
     }
 

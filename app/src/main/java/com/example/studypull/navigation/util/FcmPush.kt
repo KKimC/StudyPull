@@ -1,6 +1,5 @@
 package com.example.studypull.navigation.util
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.studypull.navigation.model.PushDTO
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,19 +22,18 @@ class FcmPush {
         gson = Gson()
         okHttpClient = OkHttpClient()
     }
-    fun sendMessage(destinationUid : String, title : String, message : String) {
+    fun sendMessage(destinationUid: String, title: String) {
         FirebaseFirestore.getInstance().collection("pushtokens").document(destinationUid).get().addOnCompleteListener {
             task ->
             if(task.isSuccessful){
-                var token = task?.result?.get("pushToken").toString()
+                val token = task?.result?.get("pushToken").toString()
 
-                var pushDTO = PushDTO()
+                val pushDTO = PushDTO()
                 pushDTO.to = token
                 pushDTO.notification.title = title
-                pushDTO.notification.body = message
 
-                var body = RequestBody.create(JSON,gson?.toJson(pushDTO))
-                var request = Request.Builder()
+                val body = RequestBody.create(JSON,gson?.toJson(pushDTO))
+                val request = Request.Builder()
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Authorization","key="+serverKey)
                     .url(url)

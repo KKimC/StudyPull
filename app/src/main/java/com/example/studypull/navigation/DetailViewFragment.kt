@@ -2,7 +2,6 @@ package com.example.studypull.navigation
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,6 @@ import com.example.studypull.navigation.model.ContentDTO
 import com.example.studypull.navigation.util.FcmPush
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Transaction
 
 class DetailViewFragment : Fragment() {
     var firestore: FirebaseFirestore? = null
@@ -170,7 +167,7 @@ class DetailViewFragment : Fragment() {
             FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
 
             var message = FirebaseAuth.getInstance()?.currentUser?.email + getString(R.string.alarm_favorite)
-            FcmPush.instance.sendMessage(destinationUid,"StudyPull",message)
+            FcmPush.instance.sendMessage(destinationUid, "StudyPull")
 
         }
     }
