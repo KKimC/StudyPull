@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.studypull.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -17,22 +18,36 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 
 class LoginActivity : AppCompatActivity() {
-    var auth: FirebaseAuth? = null
+    lateinit var binding: ActivityLoginBinding
+    lateinit var auth: FirebaseAuth
     var googleSignInClient: GoogleSignInClient? = null
     var GOOGLE_LOGIN_CODE = 9001
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        auth = FirebaseAuth.getInstance()
-        findViewById<Button>(R.id.email_login_button).setOnClickListener {
-            signinAndSignup()
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        //인증 초기화
+        auth = Firebase.auth
+
+        binding.emailLoginButton.setOnClickListener {
+            val email = binding.emailEdittext.text.toString()
+            val password = binding.passwordEdittext.text.toString()
+
+            login(email,password)
         }
-        findViewById<Button>(R.id.google_sign_in_button).setOnClickListener {
+        binding.signUpButton.setOnClickListener {
+            val intent:Intent = Intent(this@LoginActivity,SignUpActivity::class.java)
+            startActivity(intent)
+        }
+        binding.googleSignInButton.setOnClickListener {
             googleLogin()
         }
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -96,41 +111,22 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
-    fun signinAndSignup() {
-        auth?.createUserWithEmailAndPassword(
-            findViewById<EditText>(R.id.email_edittext).getText().toString(),
-            findViewById<EditText>(R.id.password_edittext).getText().toString()
-        )
-            ?.addOnCompleteListener { task ->
+    private fun login(email:String,password:String){
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    //creating a user account
-                    moveMainPage(task.result?.user)
-                } else if (task.exception?.message.isNullOrEmpty()) {
-                    //show the error massage
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                    val user = auth.currentUser
+                    val intent:Intent = Intent(this@LoginActivity,MainActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this,"로그인 성공!",Toast.LENGTH_SHORT).show()
+                    finish()
                 } else {
-                    //Login if you have account
-                    signinEmail()
+                    Log.d("Log in", "Error :${task.exception}")
+                    Toast.makeText(this,"로그인 실패",Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    fun signinEmail() {
-        auth?.signInWithEmailAndPassword(
-            findViewById<EditText>(R.id.email_edittext).getText().toString().trim(),
-            findViewById<EditText>(R.id.password_edittext).getText().toString().trim()
-        )
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    //Login
-                    moveMainPage(task.result?.user)
-                } else {
-                    //Login if you have account
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
 
     fun moveMainPage(user: FirebaseUser?) {
         if (user != null) {
