@@ -5,8 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studypull.databinding.ActivityLoginBinding
@@ -43,14 +41,15 @@ class LoginActivity : AppCompatActivity() {
 
             login(email,password)
         }
+
         binding.signUpButton.setOnClickListener {
-            val intent:Intent = Intent(this@LoginActivity,SignUpActivity::class.java)
+            val intent = Intent(this@LoginActivity,SignUpActivity::class.java)
             startActivity(intent)
         }
         binding.googleSignInButton.setOnClickListener {
             googleLogin()
         }
-        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("905571220614-5eu5c3t5p5q2eg6lm5ur8fu3pdr8ggvh.apps.googleusercontent.com")
             .requestEmail()
             .build()

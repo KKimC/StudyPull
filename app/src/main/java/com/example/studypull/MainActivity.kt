@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         setContentView(binding.root)
         binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
         setToolbarDefault()
+        binding.chatListButton.setOnClickListener {
+            val intent:Intent = Intent(this@MainActivity,ChatListActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {

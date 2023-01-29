@@ -47,6 +47,7 @@
 
                 <Button
                 style="@style/Widget.AppCompat.Button.Borderless"
+                    android:id="@+id/chat_list_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
